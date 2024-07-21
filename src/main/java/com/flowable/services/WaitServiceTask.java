@@ -3,24 +3,19 @@ package com.flowable.services;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 
-public class EmailServiceTask implements JavaDelegate {
+public class WaitServiceTask implements JavaDelegate {
   @Override
   public void execute(DelegateExecution execution) {
-
     String activityId = execution.getCurrentActivityId();
-    String email = (String) execution.getVariable(activityId + "$" + "email");
     String waitTimeStr = (String) execution.getVariable(activityId + "$" + "waitTime");
 
-    System.out.println("<<---- Sending Email ---->>");
-    System.out.println("< ----- To email : " + email + " ----- >");
-    
     waitTimeExecution(waitTimeStr);
-    
-    System.out.println("< ----- Setting emailStatus - Sent ----- >");
-    execution.setVariable(activityId + "$" +"emailStatus", "Sent");
+
+    System.out.println("<---- Setting paymentStatus - Received ---->");
+    execution.setVariable(activityId + "$" + "paymentStatus", "Received");
   }
 
-  public void waitTimeExecution(String waitTimeStr){
+  public void waitTimeExecution(String waitTimeStr) {
     int waitTime = 0;
     if (waitTimeStr != null && !waitTimeStr.isEmpty()) {
       try {
@@ -41,6 +36,4 @@ public class EmailServiceTask implements JavaDelegate {
 
     System.out.println("Wait is over.");
   }
-
-
 }

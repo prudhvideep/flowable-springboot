@@ -6,13 +6,41 @@ import org.flowable.engine.delegate.JavaDelegate;
 public class SMSServiceTask implements JavaDelegate {
   @Override
   public void execute(DelegateExecution execution) {
-    String mobile = (String) execution.getVariable("mobileNumber");
-    if (mobile == null || mobile.equals("default_number")) {
-      System.out.println("No valid mobile number provided. SMS cannot be sent.");
-      // You might want to log this, throw an exception, or handle it in some other way
-    } else {
-      System.out.println("<<---- Sending SMS to: " + mobile + " ---->>");
-      // Your SMS sending logic here
+
+    String activityId = execution.getCurrentActivityId();
+    String mobileNumber = (String) execution.getVariable(activityId + "$" + "mobileNumber");
+    String waitTimeStr = (String) execution.getVariable(activityId + "$" + "waitTime");
+
+    System.out.println("< ----- Sending Sms ----- >");
+    System.out.println("< ----- To Mobile Number : " + mobileNumber + " ----- >");
+
+    waitTimeExecution(waitTimeStr);
+    
+    System.out.println("< ----- Setting messageStatus - Delivered ----- >");
+    String status = activityId+"$"+"messageStatus";
+    System.out.println("Status ----> " + status);
+    execution.setVariable(status, "Delivered");
+  }
+
+  public void waitTimeExecution(String waitTimeStr){
+    int waitTime = 0;
+    if (waitTimeStr != null && !waitTimeStr.isEmpty()) {
+      try {
+        waitTime = Integer.parseInt(waitTimeStr);
+      } catch (NumberFormatException e) {
+        System.out.println("Invalid waitTime format. Using default value of 0 seconds.");
+      }
     }
+
+    System.out.println("Waiting for " + waitTime + " seconds");
+
+    try {
+      Thread.sleep(waitTime * 1000L);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      System.out.println("Thread was interrupted during sleep.");
+    }
+
+    System.out.println("Wait is over.");
   }
 }
