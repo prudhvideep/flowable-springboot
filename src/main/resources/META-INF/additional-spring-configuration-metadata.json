@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "spring.mail.from",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.mail.from'"
+  },
+  {
+    "name": "flowable.database.schema-update",
+    "type": "java.lang.String",
+    "description": "A description for 'flowable.database.schema-update'"
+  }
+]}

@@ -4,36 +4,34 @@ import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 
 public class WaitServiceTask implements JavaDelegate {
-  @Override
-  public void execute(DelegateExecution execution) {
-    String activityId = execution.getCurrentActivityId();
-    String waitTimeStr = (String) execution.getVariable(activityId + "$" + "waitTime");
+   public void execute(DelegateExecution execution) {
+      String activityId = execution.getCurrentActivityId();
+      String waitTimeStr = (String)execution.getVariable(activityId + "$waitTime");
+      this.waitTimeExecution(waitTimeStr);
+      System.out.println("<---- Setting paymentStatus - Received ---->");
+      execution.setVariable("paymentStatus", "Received");
+   }
 
-    waitTimeExecution(waitTimeStr);
-
-    System.out.println("<---- Setting paymentStatus - Received ---->");
-    execution.setVariable(activityId + "$" + "paymentStatus", "Received");
-  }
-
-  public void waitTimeExecution(String waitTimeStr) {
-    int waitTime = 0;
-    if (waitTimeStr != null && !waitTimeStr.isEmpty()) {
-      try {
-        waitTime = Integer.parseInt(waitTimeStr);
-      } catch (NumberFormatException e) {
-        System.out.println("Invalid waitTime format. Using default value of 0 seconds.");
+   public void waitTimeExecution(String waitTimeStr) {
+      int waitTime = 0;
+      if (waitTimeStr != null && !waitTimeStr.isEmpty()) {
+         try {
+            waitTime = Integer.parseInt(waitTimeStr);
+         } catch (NumberFormatException var5) {
+            System.out.println("Invalid waitTime format. Using default value of 0 seconds.");
+         }
       }
-    }
 
-    System.out.println("Waiting for " + waitTime + " seconds");
+      System.out.println("Waiting for " + waitTime + " seconds");
 
-    try {
-      Thread.sleep(waitTime * 1000L);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      System.out.println("Thread was interrupted during sleep.");
-    }
+      try {
+         Thread.sleep((long)waitTime * 1000L);
+      } catch (InterruptedException var4) {
+         Thread.currentThread().interrupt();
+         System.out.println("Thread was interrupted during sleep.");
+      }
 
-    System.out.println("Wait is over.");
-  }
+      System.out.println("Wait is over.");
+   }
 }
+    
